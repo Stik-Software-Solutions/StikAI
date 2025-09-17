@@ -5,6 +5,9 @@ on:
     branches: [ "main" ]
   workflow_dispatch:
 
+permissions:
+  contents: write   # ✅ needed for creating/updating releases
+
 jobs:
   build:
     name: Build Debug IPA
@@ -51,11 +54,16 @@ jobs:
           zip -r StikAI.ipa Payload
           rm -rf Payload StikAI.app
 
+      - name: Rename IPA with commit hash
+        run: |
+          SHORT_SHA=$(echo "${GITHUB_SHA}" | cut -c1-7)
+          mv StikAI.ipa "StikAI-nightly-${SHORT_SHA}.ipa"
+
       - name: Upload Debug IPA as Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: StikAI-Debug.ipa
-          path: StikAI.ipa
+          name: StikAI-Debug
+          path: StikAI-nightly-*.ipa
           retention-days: 30
 
       - name: Update Nightly GitHub Release
@@ -64,11 +72,11 @@ jobs:
           tag_name: nightly
           name: "Nightly Release"
           body: |
-            Latest nightly build from commit ${{ github.sha }}  
+            Latest nightly build from commit ${{ github.sha }}
             Built on ${{ github.run_id }} at ${{ github.run_started_at }}
           draft: false
           prerelease: true
-          files: StikAI.ipa
+          files: StikAI-nightly-*.ipa
           fail_on_unmatched_files: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
