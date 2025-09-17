@@ -40,11 +40,10 @@ jobs:
             CODE_SIGNING_REQUIRED=NO \
             CODE_SIGNING_ALLOWED=NO \
             SWIFT_OPTIMIZATION_LEVEL="-Onone" \
-            IPHONEOS_DEPLOYMENT_TARGET=17.4
+            IPHONEOS_DEPLOYMENT_TARGET=26.0
 
       - name: Create IPA from Archive
         run: |
-          # Copy the .app from the archive
           cp -R build/StikAI.xcarchive/Products/Applications/StikAI.app .
 
           # Package the app into an IPA
