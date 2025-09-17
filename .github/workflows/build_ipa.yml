@@ -69,7 +69,7 @@ jobs:
       - name: Update Alpha GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: alpha
+          tag_name: Alpha
           name: "Alpha Release"
           body: |
             Latest alpha build from commit ${{ github.sha }}
