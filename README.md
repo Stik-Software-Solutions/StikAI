@@ -1,4 +1,4 @@
-# 🛡️ StikAI  
+# StikAI  
 
 ![License](https://img.shields.io/badge/License-SSSL--1.2-lightgrey?style=for-the-badge&logo=book)  
 ![Platform](https://img.shields.io/badge/Platform-iOS-blue?style=for-the-badge&logo=apple)  
