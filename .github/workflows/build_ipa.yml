@@ -57,26 +57,26 @@ jobs:
       - name: Rename IPA with commit hash
         run: |
           SHORT_SHA=$(echo "${GITHUB_SHA}" | cut -c1-7)
-          mv StikAI.ipa "StikAI-nightly-${SHORT_SHA}.ipa"
+          mv StikAI.ipa "StikAI-alpha-${SHORT_SHA}.ipa"
 
       - name: Upload Debug IPA as Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: StikAI-Debug
-          path: StikAI-nightly-*.ipa
+          name: StikAI-Alpha
+          path: StikAI-alpha-*.ipa
           retention-days: 30
 
-      - name: Update Nightly GitHub Release
+      - name: Update Alpha GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: nightly
-          name: "Nightly Release"
+          tag_name: alpha
+          name: "Alpha Release"
           body: |
-            Latest nightly build from commit ${{ github.sha }}
+            Latest alpha build from commit ${{ github.sha }}
             Built on ${{ github.run_id }} at ${{ github.run_started_at }}
           draft: false
-          prerelease: true
-          files: StikAI-nightly-*.ipa
+          prerelease: false   # ✅ now a normal release
+          files: StikAI-alpha-*.ipa
           fail_on_unmatched_files: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
