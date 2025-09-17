@@ -3,8 +3,6 @@ name: Build Unsigned Debug IPA
 on:
   push:
     branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
   workflow_dispatch:
 
 jobs:
@@ -44,6 +42,7 @@ jobs:
 
       - name: Create IPA from Archive
         run: |
+          # Copy the .app from the archive
           cp -R build/StikAI.xcarchive/Products/Applications/StikAI.app .
 
           # Package the app into an IPA
@@ -52,9 +51,24 @@ jobs:
           zip -r StikAI.ipa Payload
           rm -rf Payload StikAI.app
 
-      - name: Upload Debug IPA
+      - name: Upload Debug IPA as Artifact
         uses: actions/upload-artifact@v4
         with:
           name: StikAI-Debug.ipa
           path: StikAI.ipa
-          retention-days: 90
+          retention-days: 30
+
+      - name: Update Nightly GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: nightly
+          name: "Nightly Release"
+          body: |
+            Latest nightly build from commit ${{ github.sha }}  
+            Built on ${{ github.run_id }} at ${{ github.run_started_at }}
+          draft: false
+          prerelease: true
+          files: StikAI.ipa
+          fail_on_unmatched_files: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
